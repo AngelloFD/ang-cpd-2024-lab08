@@ -31,17 +31,6 @@ void finaliza() {
   }
 }
 
-static void BM_secuencial(benchmark::State& state) {
-  int histograma[MAXIMO_VALOR] = {0};
-
-  for(auto _ : state) {
-    for(int idx = 0; idx < NUMERO_ELEMENTOS; idx++) {
-      histograma[randomInput[idx] - 1]++;
-    }
-    benchmark::DoNotOptimize(histograma);
-  }
-}
-
 static void BM_secuencial2(benchmark::State& state) {
   Sequential histogramCalculator;
 
@@ -52,35 +41,11 @@ static void BM_secuencial2(benchmark::State& state) {
   }
 }
 
-std::mutex mtx_estandar;
-void calcular_histograma(int* histograma, int inicio, int fin) {
-  for(int idx = inicio; idx < fin; idx++) {
-    std::lock_guard<std::mutex> lock(mtx_estandar);
-    histograma[randomInput[idx] - 1]++;
-  }
-}
-
-void histograma_estandar() {
-  int histograma[MAXIMO_VALOR] = {0};
-  const int num_hilos = std::thread::hardware_concurrency();
-  std::vector<std::thread> hilos(num_hilos);
-  int chunk = NUMERO_ELEMENTOS / num_hilos;
-
-  for(int idx = 0; idx < num_hilos; idx++) {
-    int inicio = chunk * idx;
-    int fin = (idx == num_hilos - 1) ? NUMERO_ELEMENTOS : idx * chunk;
-    hilos[idx] =
-        std::thread(calcular_histograma, std::ref(histograma), inicio, fin);
-  }
-
-  for(auto& hilo : hilos) {
-    hilo.join();
-  }
-}
-
 static void BM_estandar(benchmark::State& state) {
-  for(auto _ : state) {
-    histograma_estandar();
+  Estandar histogramCalculator;
+
+  for (auto _ : state) {
+    auto histograma = histogramCalculator.calculate(randomInput, MAXIMO_VALOR, NUMERO_ELEMENTOS);
   }
 }
 
@@ -140,7 +105,6 @@ static void BM_openmp_ompatomic(benchmark::State& state) {
   }
 }
 
-BENCHMARK(BM_secuencial)->UseRealTime()->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_secuencial2)->UseRealTime()->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_estandar)->UseRealTime()->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_estandar_reduction)->UseRealTime()->Unit(benchmark::kMillisecond);
