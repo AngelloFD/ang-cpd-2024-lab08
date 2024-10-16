@@ -84,12 +84,6 @@ static void BM_estandar(benchmark::State& state) {
   }
 }
 
-void calcular_local_histograma(int* local_histograma, int inicio, int fin) {
-  for(int idx = inicio; idx < fin; idx++) {
-    local_histograma[randomInput[idx] - 1]++;
-  }
-}
-
 static void BM_estandar_reduction(benchmark::State& state) {
   EstandarReduction histogramCalculator;
 
@@ -110,13 +104,10 @@ static void BM_openmp_reduction(benchmark::State& state) {
 }
 
 static void BM_openmp_atomic(benchmark::State& state) {
-  std::atomic<int> histograma[MAXIMO_VALOR] = {};  // default
+  OpenMPAtomic histogramCalculator;
 
-  for(auto _ : state) {
-#pragma omp parallel for
-    for(int idx = 0; idx < NUMERO_ELEMENTOS; idx++) {
-      histograma[randomInput[idx] - 1]++;
-    }
+  for (auto _ : state) {
+    auto histograma = histogramCalculator.calculate(randomInput, MAXIMO_VALOR, NUMERO_ELEMENTOS);
   }
 }
 
