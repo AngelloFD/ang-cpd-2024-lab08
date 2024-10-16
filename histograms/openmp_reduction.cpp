@@ -1,5 +1,4 @@
 #include "openmp_reduction.h"
-#include <vector>
 
 std::vector<int> OpenMPReduction::calculate(const int* input, const int buckets, const int input_size) {
     std::vector<int> histogram(buckets, 0);  
