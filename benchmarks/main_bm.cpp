@@ -90,34 +90,11 @@ void calcular_local_histograma(int* local_histograma, int inicio, int fin) {
   }
 }
 
-void historgrama_estandar_reduction() {
-  int histograma[MAXIMO_VALOR] = {0};
-  const int num_hilos = std::thread::hardware_concurrency();
-  int local_histograma[num_hilos][MAXIMO_VALOR] = {0};
-  std::vector<std::thread> hilos(num_hilos);
-  int chunk = NUMERO_ELEMENTOS / num_hilos;
-
-  for(int idx = 0; idx < num_hilos; idx++) {
-    int inicio = chunk * idx;
-    int fin = (idx == num_hilos - 1) ? NUMERO_ELEMENTOS : idx * chunk;
-    hilos[idx] = std::thread(calcular_local_histograma,
-                             std::ref(local_histograma[idx]), inicio, fin);
-  }
-
-  for(auto& hilo : hilos) {
-    hilo.join();
-  }
-
-  for(int idx = 0; idx < num_hilos; idx++) {
-    for(int idy = 0; idy < num_hilos; idy++) {
-      histograma[idy] += local_histograma[idx][idy];
-    }
-  }
-}
-
 static void BM_estandar_reduction(benchmark::State& state) {
-  for(auto _ : state) {
-    historgrama_estandar_reduction();
+  EstandarReduction histogramCalculator;
+
+  for (auto _ : state) {
+    auto histograma = histogramCalculator.calculate(randomInput, MAXIMO_VALOR, NUMERO_ELEMENTOS);
   }
 }
 
