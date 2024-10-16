@@ -9,7 +9,5 @@ std::vector<int> OpenMPLockGuard::calculate(const int* input, const int buckets,
       std::lock_guard<std::mutex> lock(mtx);
       histogram[input[idx] - 1]++;
     }
-  
-
     return histogram;
 }

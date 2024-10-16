@@ -6,6 +6,5 @@ std::vector<int> OpenMPReduction::calculate(const int* input, const int buckets,
     for(int idx = 0; idx < input_size; idx++) {
       histogram[input[idx] - 1]++;
     }
-
     return histogram;
 }
