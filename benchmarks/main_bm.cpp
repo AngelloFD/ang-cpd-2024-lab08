@@ -93,13 +93,10 @@ static void BM_estandar_reduction(benchmark::State& state) {
 }
 
 static void BM_openmp_reduction(benchmark::State& state) {
-  int histograma[MAXIMO_VALOR] = {0};
+  OpenMPReduction histogramCalculator;
 
-  for(auto _ : state) {
-#pragma omp parallel for reduction(+ : histograma[ : MAXIMO_VALOR])
-    for(int idx = 0; idx < NUMERO_ELEMENTOS; idx++) {
-      histograma[randomInput[idx] - 1]++;
-    }
+  for (auto _ : state) {
+    auto histograma = histogramCalculator.calculate(randomInput, MAXIMO_VALOR, NUMERO_ELEMENTOS);
   }
 }
 
