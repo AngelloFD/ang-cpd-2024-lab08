@@ -109,15 +109,10 @@ static void BM_openmp_atomic(benchmark::State& state) {
 }
 
 static void BM_openmp_lock_guard(benchmark::State& state) {
-  int histograma[MAXIMO_VALOR] = {0};
-  std::mutex mtx;
+  OpenMPLockGuard histogramCalculator;
 
-  for(auto _ : state) {
-#pragma omp parallel for
-    for(int idx = 0; idx < NUMERO_ELEMENTOS; idx++) {
-      std::lock_guard<std::mutex> lock(mtx);
-      histograma[randomInput[idx] - 1]++;
-    }
+  for (auto _ : state) {
+    auto histograma = histogramCalculator.calculate(randomInput, MAXIMO_VALOR, NUMERO_ELEMENTOS);
   }
 }
 
