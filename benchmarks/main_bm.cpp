@@ -133,14 +133,10 @@ static void BM_openmp_critical(benchmark::State& state) {
 }
 
 static void BM_openmp_ompatomic(benchmark::State& state) {
-  int histograma[MAXIMO_VALOR] = {0};
+  OpenMPOMPAtomic histogramCalculator;
 
-  for(auto _ : state) {
-#pragma omp parallel for
-    for(int idx = 0; idx < NUMERO_ELEMENTOS; idx++) {
-#pragma omp atomic
-      histograma[randomInput[idx] - 1]++;
-    }
+  for (auto _ : state) {
+    auto histograma = histogramCalculator.calculate(randomInput, MAXIMO_VALOR, NUMERO_ELEMENTOS);
   }
 }
 
