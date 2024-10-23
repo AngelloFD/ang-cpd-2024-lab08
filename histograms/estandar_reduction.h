@@ -6,7 +6,7 @@
 class EstandarReduction : public Histogram {
  public:
   std::vector<int> calculate(const int*, const int, const int) override;
-  // static void calcular_local_histograma(std::vector<int>& local_histograma, int inicio, int fin, const int* input);
+  static void calcular_local_histograma(std::vector<int>& local_histograma, int inicio, int fin, const int* input);
 };
 
 #endif
