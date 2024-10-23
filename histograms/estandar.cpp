@@ -1,9 +1,9 @@
 #include "estandar.h"
 #include <thread>
 
-void Estandar::calcular_histograma(std::vector<int>& histograma, int inicio, int fin, const int* input, std::mutex& mtx) {
+void Estandar::calcular_histograma(std::vector<int>& histograma, int inicio, int fin, const int* input) {
     for(int idx = inicio; idx < fin; idx++) {
-        std::lock_guard<std::mutex> lock(mtx);
+        std::lock_guard<std::mutex> lock(mtx_estandar);
         histograma[input[idx] - 1]++;
     }
 }
@@ -13,12 +13,11 @@ std::vector<int> Estandar::calculate(const int* input, const int buckets, const 
     const int num_hilos = std::thread::hardware_concurrency();
     std::vector<std::thread> hilos(num_hilos);
     int chunk = input_size / num_hilos;
-    std::mutex mtx_estandar;
 
     for(int idx = 0; idx < num_hilos; idx++) {
         int inicio = chunk * idx;
         int fin = (idx == num_hilos - 1) ? input_size : (idx + 1) * chunk;
-        hilos[idx] = std::thread(Estandar::calcular_histograma, std::ref(histogram), inicio, fin, input, std::ref(mtx_estandar));
+        hilos[idx] = std::thread(Estandar::calcular_histograma, std::ref(histogram), inicio, fin, input);
     }
 
     for(auto& hilo : hilos) {
