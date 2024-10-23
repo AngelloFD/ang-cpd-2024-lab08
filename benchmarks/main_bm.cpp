@@ -14,6 +14,7 @@
 #include "openmp_lock_unlock.h"
 #include "openmp_critical.h"
 #include "openmp_ompatomic.h"
+#include "secuencial1.h"
 
 static int* randomInput = nullptr;
 static const int MAXIMO_VALOR = 5;
@@ -36,6 +37,16 @@ void finaliza() {
   if(randomInput != nullptr) {
     delete[] randomInput;
     randomInput = nullptr;
+  }
+}
+
+static void BM_secuencial(benchmark::State& state) {
+  Sequential1 histogramCalculator;
+
+  for(auto _ : state) {
+    auto histograma = histogramCalculator.calculate(randomInput, MAXIMO_VALOR,
+                                                    NUMERO_ELEMENTOS);
+    benchmark::DoNotOptimize(histograma);
   }
 }
 
@@ -113,6 +124,7 @@ static void BM_openmp_ompatomic(benchmark::State& state) {
   }
 }
 
+BENCHMARK(BM_secuencial)->UseRealTime()->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_secuencial2)->UseRealTime()->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_estandar)->UseRealTime()->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_estandar_reduction)->UseRealTime()->Unit(benchmark::kMillisecond);
