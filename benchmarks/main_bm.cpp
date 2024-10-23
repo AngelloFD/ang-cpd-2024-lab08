@@ -6,6 +6,14 @@
 #include <thread>
 
 #include "sequential.h"
+#include "estandar.h"
+#include "estandar_reduction.h"
+#include "openmp_atomic.h"
+#include "openmp_reduction.h"
+#include "openmp_lock_guard.h"
+#include "openmp_lock_unlock.h"
+#include "openmp_critical.h"
+#include "openmp_ompatomic.h"
 
 static int* randomInput = nullptr;
 static const int MAXIMO_VALOR = 5;
