@@ -1,7 +1,7 @@
 #include "estandar.h"
 #include <thread>
 
-void Estandar::calcular_histograma(int* histograma, int inicio, int fin, const int* input, std::mutex mtx) {
+void Estandar::calcular_histograma(int* histograma, int inicio, int fin, const int* input, std::mutex& mtx) {
     for(int idx = inicio; idx < fin; idx++) {
         std::lock_guard<std::mutex> lock(mtx);
         histograma[input[idx] - 1]++;
