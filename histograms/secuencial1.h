@@ -1,5 +1,5 @@
-#ifndef SEQUENTIAL_H
-#define SEQUENTIAL_H
+#ifndef SEQUENTIAL1_H
+#define SEQUENTIAL1_H
 
 #include "histogram.h"
 
