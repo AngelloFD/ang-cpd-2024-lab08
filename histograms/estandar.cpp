@@ -17,8 +17,8 @@ std::vector<int> Estandar::calculate(const int* input, const int buckets, const 
 
     for(int idx = 0; idx < num_hilos; idx++) {
         int inicio = chunk * idx;
-        int fin = (idx == num_hilos - 1) ? input_size : idx * chunk;
-        hilos[idx] = std::thread(Estandar::calcular_histograma, std::ref(histogram), inicio, fin, std::cref(input), std::ref(mtx_estandar));
+        int fin = (idx == num_hilos - 1) ? input_size : (idx + 1) * chunk;
+        hilos[idx] = std::thread(Estandar::calcular_histograma, std::ref(histogram[0]), inicio, fin, input, std::ref(mtx_estandar));
     }
 
     for(auto& hilo : hilos) {
@@ -26,3 +26,4 @@ std::vector<int> Estandar::calculate(const int* input, const int buckets, const 
     }
     return histogram;
 }
+
